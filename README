@@ -1,0 +1,11 @@
+Description:Auto get WIFI Key and auto login.
+Version:0.3
+Feactures:
+1. Can edit the server address.
+2. Auto authorization when conneceting Clear-Guest WIFI.
+3. Auto get KEY when network type changing.
+
+Author: Cupidwu     Email:cupidwu87@gmail.com   Date:11/23/2013
+
+
+

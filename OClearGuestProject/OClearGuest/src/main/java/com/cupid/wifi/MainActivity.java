@@ -3,11 +3,14 @@ package com.cupid.wifi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,14 +32,14 @@ public class MainActivity extends ActionBarActivity {
     private Button loginBtn;
     private EditText pwdText;
 
-    private String serverPwd="";
+    private String serverPwd = "";
 
-    private Handler pHandler = new Handler(){
+    private Handler pHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
 
             pDlg.dismiss();
-            switch (AsynTaskResult.valueOf(msg.what)){
+            switch (AsynTaskResult.valueOf(msg.what)) {
                 case SUCCESS:
                     Toast.makeText(MainActivity.this, "Login success...", Toast.LENGTH_LONG).show();
                     break;
@@ -51,12 +54,12 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-    private Handler keyHandler = new Handler(){
+    private Handler keyHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
 
             keyDlg.dismiss();
-            Bundle b= msg.getData();
+            Bundle b = msg.getData();
             pwdText.setText(b.getString("pwd"));
             super.handleMessage(msg);
         }
@@ -73,15 +76,15 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loginBtn = (Button)findViewById(R.id.loginBtn);
-        pwdText = (EditText)findViewById(R.id.pwdText);
+        loginBtn = (Button) findViewById(R.id.loginBtn);
+        pwdText = (EditText) findViewById(R.id.pwdText);
 
         pwdText.setText(KeyAccess.getKey(MainActivity.this));
 
         //update server url info
         ServerInfo.setCurServerURL(KeyAccess.getServerURL(MainActivity.this));
 
-        if(pwdText.getText().toString().isEmpty()){
+        if (pwdText.getText().toString().isEmpty()) {
             //get the password from network
             keyDlg = new ProgressDialog(MainActivity.this);
             keyDlg.setTitle("Fetch Key");
@@ -97,7 +100,7 @@ public class MainActivity extends ActionBarActivity {
                     Bundle b = new Bundle();
                     serverPwd = ServerInfo.getServerPwd();
 
-                    b.putString("pwd",serverPwd);
+                    b.putString("pwd", serverPwd);
                     msg.setData(b);
 
                     msg.sendToTarget();
@@ -118,18 +121,18 @@ public class MainActivity extends ActionBarActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        if(WebLoginInfo.loginProcess(pwdText.getText().toString())){
+                        if (WebLoginInfo.loginProcess(pwdText.getText().toString())) {
                             pHandler.sendEmptyMessage(AsynTaskResult.SUCCESS.value());
-                            if(!serverPwd.equals(pwdText.getText().toString())){
+                            if (!serverPwd.equals(pwdText.getText().toString())) {
 
                                 //upload the key to the server...
                                 ServerInfo.setCurServerURL(KeyAccess.getServerURL(MainActivity.this));
                                 ServerInfo.uploadPwd(pwdText.getText().toString());
 
-                            }else{
+                            } else {
                                 KeyAccess.storeNewKey(MainActivity.this, pwdText.getText().toString());
                             }
-                        }else{
+                        } else {
                             pHandler.sendEmptyMessage(AsynTaskResult.FAILED.value());
                         }
                     }
@@ -143,9 +146,26 @@ public class MainActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        switch (item.getItemId()) {
+            case R.id.action_version:
+                showVersionInfo();
+                break;
+            case R.id.action_settings:
+                setServerAddr();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /*
+     * Reset the Server Address URL
+     */
+    private void setServerAddr() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
         builder.setTitle("输入新Server地址：");
@@ -161,19 +181,38 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(DialogInterface dialog, int which) {
                 //refresh the server url info in Prefs
                 KeyAccess.storeNewServerURL(MainActivity.this, newUrlText.getText().toString());
-                Toast.makeText(MainActivity.this, "新Server地址更新成功...",Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "新Server地址更新成功...", Toast.LENGTH_LONG).show();
                 dialog.dismiss();
             }
         });
 
-        builder.setNegativeButton("取消",new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-
         builder.create().show();
-        return super.onOptionsItemSelected(item);
     }
+
+    private void showVersionInfo(){
+        String versionNo = "0.1";
+        try{
+            PackageManager pm = getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(getPackageName(),0);
+            versionNo = pi.versionName;
+        }catch(PackageManager.NameNotFoundException nnfe){
+            Log.e(TAG,"Cannot get Version name.");
+        }
+
+        new AlertDialog.Builder(MainActivity.this).setTitle("当前版本").setMessage("版本号为："+versionNo).setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                }).show();
+    }
+
+
 }

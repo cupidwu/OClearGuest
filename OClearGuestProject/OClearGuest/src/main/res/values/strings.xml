@@ -3,5 +3,6 @@
 
     <string name="app_name">OClearGuest</string>
     <string name="action_settings">更改服务器地址</string>
+    <string name="action_version">版本号</string>
 
 </resources>

@@ -19,8 +19,8 @@ public class ServerInfo {
 
     private static final String TAG = "ServerInfo";
 
-    public static final String DEFAULT_URL = "http://www.wis-tech.com.cn:8080/plugin/wifikey/";
-
+    //public static final String DEFAULT_URL = "http://www.wis-tech.com.cn:8080/plugin/wifikey/";
+    public static final String DEFAULT_URL = "http://222.126.233.70:8080/plugin/wifikey/";
     private static String curServerURL = DEFAULT_URL;
 
     public static void setCurServerURL(String curServerURL) {
@@ -42,6 +42,7 @@ public class ServerInfo {
             pwd = WifiParserUtil.getResponseText(hr.getEntity());
             if(pwd.length() > 20){
                 //invalidate
+                Log.d(TAG,"Error password:" + pwd);
                 pwd = "";
             }
             Log.d(TAG, "Exist password:" + pwd);

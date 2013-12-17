@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity {
         //update server url info
         ServerInfo.setCurServerURL(KeyAccess.getServerURL(MainActivity.this));
 
-        if (pwdText.getText().toString().isEmpty()) {
+        if (pwdText.getText().toString().length() == 0) {
             //get the password from network
             keyDlg = new ProgressDialog(MainActivity.this);
             keyDlg.setTitle("Fetch Key");

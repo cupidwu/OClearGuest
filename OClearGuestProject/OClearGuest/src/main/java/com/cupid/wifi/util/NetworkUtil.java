@@ -53,7 +53,7 @@ public class NetworkUtil {
             if (ni.isConnected()) {
                 final WifiManager wifiManager = (WifiManager) c.getSystemService(Context.WIFI_SERVICE);
                 final WifiInfo connectionInfo = wifiManager.getConnectionInfo();
-                if (connectionInfo != null && !(connectionInfo.getSSID().isEmpty())
+                if (connectionInfo != null && connectionInfo.getSSID().length() > 0
                         && connectionInfo.getSSID().equalsIgnoreCase(CLEARGUEST_SSID)) {
                     Log.d(TAG, "Connect to clear guest wifi...");
                     return true;

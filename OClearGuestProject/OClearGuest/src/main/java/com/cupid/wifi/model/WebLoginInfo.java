@@ -38,7 +38,7 @@ public class WebLoginInfo {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
 
         nvps.add(new BasicNameValuePair("buttonClicked","4"));
-        nvps.add(new BasicNameValuePair("redirect_url","www.baidu.com"));
+        nvps.add(new BasicNameValuePair("redirect_url","www.my.oracle.com"));
         nvps.add(new BasicNameValuePair("err_flag", "0"));
         nvps.add(new BasicNameValuePair("username", "guest"));
         nvps.add(new BasicNameValuePair("password", key));

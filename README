@@ -1,9 +1,13 @@
 Description:Auto get WIFI Key and auto login.
-Version:0.3
+Version:0.3.2
+Fix Bug:
+1. It can run on Android SDK 8 and above.
+
 Feactures:
 1. Can edit the server address.
 2. Auto authorization when conneceting Clear-Guest WIFI.
 3. Auto get KEY when network type changing.
+
 
 Author: Cupidwu     Email:cupidwu87@gmail.com   Date:11/23/2013
 

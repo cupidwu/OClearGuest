@@ -32,7 +32,7 @@ public class WifiReceiver extends BroadcastReceiver {
                 case GETKEY:
                     //get wifi key from server
                     String keyValue = b.getString("value");
-                    if(keyValue.isEmpty()){
+                    if(keyValue.length() == 0){
                         Toast.makeText(mContext,"抱歉，你是今天第一位，KEY还没有",Toast.LENGTH_LONG).show();
                     }else{
                         Toast.makeText(mContext,"获取当天WIFI Key："+keyValue,Toast.LENGTH_LONG).show();
@@ -55,7 +55,7 @@ public class WifiReceiver extends BroadcastReceiver {
         final Context fContext = context;
         mContext = context;
 
-        if (KeyAccess.getKey(context).isEmpty()) {
+        if (KeyAccess.getKey(context).length() == 0) {
             if (NetworkUtil.isNetworkConnected(context)) {
                 Toast.makeText(context,"尝试获取WIFI KEY中...",Toast.LENGTH_SHORT).show();
                 new Thread(new Runnable() {
@@ -68,7 +68,7 @@ public class WifiReceiver extends BroadcastReceiver {
                         Log.d(TAG, "Server exist key:" + existKey);
                         sendMsg(MsgType.GETKEY,existKey);
 
-                        if(!existKey.isEmpty()){
+                        if(existKey.length()>0){
                             KeyAccess.storeNewKey(fContext, existKey);
                         }
                     }
